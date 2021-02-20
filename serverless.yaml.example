@@ -1,0 +1,11 @@
+component: scf
+name: 
+app: url-tester-func
+inputs:
+  src: ./
+  handler: main
+  runtime: Go1
+  namespace: default
+  region: 
+  memorySize: 128
+  timeout: 3
