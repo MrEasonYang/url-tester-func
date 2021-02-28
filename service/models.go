@@ -4,6 +4,7 @@ package service
 type TargetConfig struct {
 	URL string
 	ExpectedStatusCode int
+	IgnoreAnalysis bool
 }
 
 // Result is the return msg combination struct for the tester.
