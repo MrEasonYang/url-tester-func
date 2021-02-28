@@ -1,11 +1,11 @@
 package service
 
 import (
-	"net/http"
+	"encoding/json"
+	"fmt"
 	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
-	"fmt"
-	"encoding/json"
+	"net/http"
 )
 
 var bot *tgbotapi.BotAPI
@@ -42,6 +42,9 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 
 			proxyReq.Header = make(http.Header)
 			proxyReq.Header.Set("user-agent", "url-tester-func")
+			if currentTargetConfig.IgnoreAnalysis {
+				proxyReq.Header.Set("analysis-action", "ignore")
+			}
 
 			resp, err := httpClient.Do(proxyReq)
 			if err != nil {
@@ -52,7 +55,7 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 				return
 			}
 			if resp.StatusCode != currentTargetConfig.ExpectedStatusCode {
-				msg := fmt.Sprintf("Failed to test URL %s due to status code is %d rather than %d", 
+				msg := fmt.Sprintf("Failed to test URL %s due to status code is %d rather than %d",
 					currentTargetConfig.URL, resp.StatusCode, currentTargetConfig.ExpectedStatusCode)
 				sendAlertMsg(msg)
 				ch <- Result{URL: currentTargetConfig.URL, Msg: msg, Succeed: false}
@@ -66,7 +69,7 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 	}
 
 	var result []Result
-	go func ()  {
+	go func() {
 		sum := 0
 		for v := range counter {
 			sum += v
