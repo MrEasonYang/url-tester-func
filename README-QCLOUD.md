@@ -1,6 +1,6 @@
 # 快速构建 scf-golang
 
-**中文** | [English](./README_EN.md)
+**中文** | [English](./README-QCLOUD_EN.md)
 
 ## 简介
 
