@@ -39,7 +39,9 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 
 		go func() {
 			proxyReq, err := http.NewRequest(http.MethodGet, currentTargetConfig.URL, nil)
-
+			if err != nil {
+				log.Panic(err)
+			}
 			proxyReq.Header = make(http.Header)
 			proxyReq.Header.Set("user-agent", "url-tester-func")
 			if currentTargetConfig.IgnoreAnalysis {
