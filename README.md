@@ -3,7 +3,9 @@ A simple url tester function based on Golang and Serverless.
 [中文说明](https://easonyang.com/2021/02/21/golang-qcloud-serverless-url-tester-func/)
 
 # Features
-- Time based url tester which is able forward the test result to the specified telegram chat.
+- Time based url tester which is able forward the test result to the specified IM.
+- Support to nofiry failure via **Telegram/Ftqq(Wechat)/Qmsg(QQ)**.
+- Use specified User-Agent contains Bot description.
 - Support QCloud Serverless(SCF).
 
 # Usage
@@ -42,12 +44,47 @@ And leave the other things as default.
 
 ### Setup Serverless environment
 Set the global environment on QCloud platform interface:
-- **config**: 
+- **config(Required)**: 
+Config structure
+    * url: The target url to test with.
+    * expectedStatusCode: The HTTP response status code which should not trigger a failure notify.
+    * notifyMethod: The IM to send notify message, should be one of telegram/ftqq_v1/ftqq_v2/qmsg_chat/qmsg_group_chat.
+
+Example:
 ```json
-[{"URL": "<Target URL 1>","ExpectedStatusCode": 200},{"URL": "<Target URL 2>","ExpectedStatusCode": 403}]
+[
+    {
+        "url": "<Target URL 1 with Telegram Notifier>",
+        "expectedStatusCode": 200,
+        "notifyMethod": "telegram"
+    },
+    {
+        "url": "<Target URL 2 with FtqqV1 Notifier>",
+        "expectedStatusCode": 403,
+        "notifyMethod": "ftqq_v1"
+    },
+    {
+        "url": "<Target URL 3 with FtqqV2 Notifier>",
+        "expectedStatusCode": 400,
+        "notifyMethod": "ftqq_v2"
+    },
+    {
+        "url": "<Target URL 4 with Qmsg Notifier>",
+        "expectedStatusCode": 301,
+        "notifyMethod": "qmsg_chat"
+    },
+    {
+        "url": "<Target URL 4 with Qmsg Group Notifier>",
+        "expectedStatusCode": 200,
+        "notifyMethod": "qmsg_group_chat"
+    },
+]
 ```
-- **token**: Telegram bot api token, could be obtained from BotFather. Check this [FAQ](https://telegra.ph/Awesome-Telegram-Bot-11-11) out.
-- **chatID**: Target chat associated to the telegram bot, could be obtained from the updates api, see telegram docs for more information. Here is a tutorial: [How to get a group chat id?](https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id)
+- **telegram_token(Required when using telegram)**: Telegram bot api token, could be obtained from BotFather. Check this [FAQ](https://telegra.ph/Awesome-Telegram-Bot-11-11) out.
+- **telegram_chat_id(Required when using telegram)**: Target chat associated to the telegram bot, could be obtained from the updates api, see telegram docs for more information. Here is a tutorial: [How to get a group chat id?](https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id)
+- **qmsg_key(Required when using qmsg)**: [qmsg key](https://qmsg.zendee.cn/me.html)
+- **ftqq_v1_key(Required when using ftqq v1 api)**: [ftqq send key](https://sct.ftqq.com/sendkey), only users registered before V2 released can obtain the send key due to the V1 API is deprecated now by ftqq.
+- **ftqq_v2_Key(Required when using ftqq v2 api)**: [ftqq send key](https://sct.ftqq.com/sendkey)
 
 ### Upload codes
 Use ZIP(recommended) to upload the entire function directory including the executable file we've just built.
