@@ -3,28 +3,18 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"log"
 	"net/http"
 )
 
-var bot *tgbotapi.BotAPI
-var botChatID int64
-
 // TesterHandler is the entry func of the application.
-func TesterHandler(targetArr []TargetConfig, telegramToken string, telegramChatID int64) string {
-	var err error
-	bot, err = tgbotapi.NewBotAPI(telegramToken)
-	if err != nil {
-		log.Panic(err)
-	}
-	botChatID = telegramChatID
-	byteData, _ := json.Marshal(doRequestTest(targetArr))
+func TesterHandler(targetArr []TargetConfig, notifierConfig NotifierConfig) string {
+	byteData, _ := json.Marshal(doRequestTest(targetArr, notifierConfig))
 	return string(byteData)
 }
 
 // Asynchronously request all target and report errors.
-func doRequestTest(targetArr []TargetConfig) []Result {
+func doRequestTest(targetArr []TargetConfig, notifierConfig NotifierConfig) []Result {
 	if len(targetArr) == 0 {
 		return nil
 	}
@@ -42,6 +32,7 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 			if err != nil {
 				log.Panic(err)
 			}
+
 			proxyReq.Header = make(http.Header)
 			proxyReq.Header.Set("user-agent", "url-tester-func")
 			if currentTargetConfig.IgnoreAnalysis {
@@ -51,7 +42,7 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 			resp, err := httpClient.Do(proxyReq)
 			if err != nil {
 				msg := fmt.Sprintf("Failed to test URL %s due to error %s", currentTargetConfig.URL, err)
-				sendAlertMsg(msg)
+				sendAlertMsg(msg, currentTargetConfig.NotifyMethod, notifierConfig)
 				ch <- Result{URL: currentTargetConfig.URL, Msg: msg, Succeed: false}
 				counter <- 1
 				return
@@ -59,7 +50,7 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 			if resp.StatusCode != currentTargetConfig.ExpectedStatusCode {
 				msg := fmt.Sprintf("Failed to test URL %s due to status code is %d rather than %d",
 					currentTargetConfig.URL, resp.StatusCode, currentTargetConfig.ExpectedStatusCode)
-				sendAlertMsg(msg)
+				sendAlertMsg(msg, currentTargetConfig.NotifyMethod, notifierConfig)
 				ch <- Result{URL: currentTargetConfig.URL, Msg: msg, Succeed: false}
 				counter <- 1
 				return
@@ -87,8 +78,8 @@ func doRequestTest(targetArr []TargetConfig) []Result {
 	return result
 }
 
-// Send alert via telegram.
-func sendAlertMsg(msgToSend string) {
-	msg := tgbotapi.NewMessage(botChatID, msgToSend)
-	bot.Send(msg)
+// Send alert via specified notifier.
+func sendAlertMsg(msgToSend string, notifierType string, notifierConfig NotifierConfig) {
+	notifier := GetNotifierByType(notifierType)
+	notifier.Notify(msgToSend, notifierConfig)
 }
