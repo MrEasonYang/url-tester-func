@@ -34,7 +34,7 @@ func doRequestTest(targetArr []TargetConfig, notifierConfig NotifierConfig) []Re
 			}
 
 			proxyReq.Header = make(http.Header)
-			proxyReq.Header.Set("user-agent", "url-tester-func")
+			proxyReq.Header.Set("user-agent", "url-tester-func BOT")
 			if currentTargetConfig.IgnoreAnalysis {
 				proxyReq.Header.Set("analysis-action", "ignore")
 			}
