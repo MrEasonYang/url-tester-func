@@ -5,7 +5,7 @@ A simple url tester function based on Golang and Serverless.
 # Features
 - Time based url tester which is able forward the test result to the specified IM.
 - Support to nofiry failure via **Telegram/Ftqq(Wechat)/Qmsg(QQ)**.
-- Use specified User-Agent contains Bot description.
+- Use specified User-Agent contains Bot description(url-tester-func BOT).
 - Support QCloud Serverless(SCF).
 
 # Usage
@@ -46,9 +46,9 @@ And leave the other things as default.
 Set the global environment on QCloud platform interface:
 - **config(Required)**: 
 Config structure
-    * url: The target url to test with.
-    * expectedStatusCode: The HTTP response status code which should not trigger a failure notify.
-    * notifyMethod: The IM to send notify message, should be one of telegram/ftqq_v1/ftqq_v2/qmsg_chat/qmsg_group_chat.
+    1. **url**: The target url to test with.
+    2. **expectedStatusCode**: The HTTP response status code which should not trigger a failure notify.
+    3. **notifyMethod**: The IM to send notify message, should be one of telegram/ftqq_v1/ftqq_v2/qmsg_chat/qmsg_group_chat.
 
 Example:
 ```json
@@ -103,8 +103,14 @@ Currently url-tester-func can only work under QCloud SCF, more platforms should 
 - Azure Serverless
 - GCP Serverless
 
+## About the bills
+It will be free for small usage like less then 10 urls and 10k invocations per month, however, **the more resources you use the more money you will have to pay** because the outcome public internet requests are always not free. See QCloud official [docs](https://cloud.tencent.com/product/scf/pricing) for more information.
+
 ## Contribution
 Contributions are welcome, just remember to lint your code.
+
+## Credits
+[go-telegram-bot-api/telegram-bot-api](https://github.com/go-telegram-bot-api/telegram-bot-api)
 
 ## License
 [MIT](https://github.com/MrEasonYang/url-tester-func/blob/main/LICENSE)
