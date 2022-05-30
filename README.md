@@ -104,7 +104,9 @@ Currently url-tester-func can only work under QCloud SCF, more platforms should 
 - GCP Serverless
 
 ## About the bills
-It will be free for small usage like less then 10 urls and 10k invocations per month, however, **the more resources you use the more money you will have to pay** because the outcome public internet requests are always not free. See QCloud official [docs](https://cloud.tencent.com/product/scf/pricing) for more information.
+<del>It will be free for small usage like less then 10 urls and 10k invocations per month, however, **the more resources you use the more money you will have to pay** because the outcome public internet requests are always not free. See QCloud official [docs](https://cloud.tencent.com/product/scf/pricing) for more information.</del>
+
+**Warning: Using Tencent cloud serverless will be charged with a minimum cost since 2022/06/01.**
 
 ## Contribution
 Contributions are welcome, just remember to lint your code.
